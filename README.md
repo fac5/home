@@ -105,6 +105,16 @@ Cloudflare 的界面偶尔会调整，如果找不到对应入口，按「Git �
 
 顺便把 `src/config/site.ts` 里的 `heroImageAlt` 改成对这张照片的描述，对无障碍和 SEO 都有好处。
 
+### 关掉首页大图
+
+不想在首页放照片时，把 `src/config/site.ts` 里的 `showHeroImage` 改成 `false`：
+
+```ts
+showHeroImage: true,   // true = 左边文字 + 右边图片；false = 纯文字单列
+```
+
+关闭后 Hero 会自动变成单列的纯文字排版（手机端和桌面端都重新算过间距，不会留下空位），`heroImage`、`heroImageAlt` 这些配置会被忽略。
+
 ### 改站点信息
 
 `src/config/site.ts` 是唯一的站点配置入口：
@@ -113,7 +123,7 @@ Cloudflare 的界面偶尔会调整，如果找不到对应入口，按「Git �
 - `nav`：顶部导航
 - `internetSites`：首页「My Internet」的卡片
 - `heroActions`：首页 Hero 的两个主入口
-- `socialLinks`：社交链接（`href` 为 `null` 时不会显示，填上就自动出现在页脚）
+- `socialLinks`：社交链接（`href` 为 `null` 时不会显示，填上之后会出现在 /links 页面的 Me 区块）
 - `filings`：页脚最下面一行的备案信息（ICP 备案、公安备案），不需要就把数组改成 `[]`
 
 ### 改备案信息
@@ -126,7 +136,7 @@ export const filings: Filing[] = [
   {
     text: '贵公网安备 52262702000070号',
     href: 'https://beian.mps.gov.cn/#/query/webSearch?code=52262702000070',
-    icon: '/images/beian.png', // 小警徽图标，放在 public/images/ 下
+    icon: '/images/gonganbeian.png', // 小警徽图标，放在 public/images/ 下
   },
 ];
 ```

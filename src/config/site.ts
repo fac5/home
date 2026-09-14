@@ -41,6 +41,12 @@ export const site = {
   /** 分享卡片图：替换 public/images/og.jpg 即可（1200×630 最好） */
   ogImage: '/images/og.jpg',
   /**
+   * 是否在首页显示 Hero 图片。
+   * true：Hero 是「左边文字 + 右边图片」的两列布局；
+   * false：Hero 变成纯文字的单列布局（不会留下空白占位），下面的图片配置也会被忽略。
+   */
+  showHeroImage: false,
+  /**
    * 首页 Hero 图片。
    * 把你自己的照片放到 public/images/hero.jpg，首页会自动使用它；
    * 如果这个文件不存在，则回退到内置的占位图。
@@ -157,6 +163,6 @@ export const filings: Filing[] = [
   {
     text: '贵公网安备 52262702000070号',
     href: 'https://beian.mps.gov.cn/#/query/webSearch?code=52262702000070',
-    icon: '/images/beian.png',
+    icon: '/images/gonganbeian.png',
   },
 ];

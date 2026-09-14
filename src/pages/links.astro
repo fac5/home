@@ -2,11 +2,12 @@
 import { ArrowUpRight } from '@lucide/astro';
 import PageHeader from '@/components/PageHeader.astro';
 import SiteCard from '@/components/SiteCard.astro';
-import { internetSites } from '@/config/site';
+import { internetSites, socialLinks } from '@/config/site';
 import { friendLinks, friendLinksNote } from '@/data/links';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
 const description = '我自己的几个站点，还有一些朋友的博客。';
+const socials = socialLinks.filter((link) => link.href);
 ---
 
 <BaseLayout title="Links" description={description}>
@@ -18,6 +19,24 @@ const description = '我自己的几个站点，还有一些朋友的博客。';
       <ul class="mt-4 grid gap-4 sm:grid-cols-2">
         {internetSites.map((item) => <li class="h-full"><SiteCard item={item} /></li>)}
       </ul>
+
+      {
+        socials.length > 0 && (
+          <ul class="mt-4 flex flex-wrap gap-2">
+            {socials.map((social) => (
+              <li>
+                <a
+                  href={social.href as string}
+                  rel="noopener"
+                  class="chip transition-colors hover:border-ink/25 hover:text-ink"
+                >
+                  {social.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
     </section>
 
     <section data-reveal>
