@@ -111,7 +111,7 @@ Cloudflare 的界面偶尔会调整，如果找不到对应入口，按「Git �
 不想在首页放照片时，把 `src/config/site.ts` 里的 `showHeroImage` 改成 `false`：
 
 ```ts
-showHeroImage: true,   // true = 左边文字 + 右边图片；false = 纯文字单列
+showHeroImage: true   // true = 左边文字 + 右边图片；false = 纯文字单列
 ```
 
 关闭后 Hero 会自动变成单列的纯文字排版（手机端和桌面端都重新算过间距，不会留下空位），`heroImage`、`heroImageAlt` 这些配置会被忽略。
@@ -122,7 +122,7 @@ showHeroImage: true,   // true = 左边文字 + 右边图片；false = 纯文字
 
 - `site`：站名、标题、简介、域名、首页文案、RSS 地址
 - `nav`：顶部导航
-- `internetSites`：首页「My Internet」的卡片
+- `internetSites`：首页「My Internet」的卡片，页脚导航里的站外站点也取自这里
 - `heroActions`：首页 Hero 的两个主入口
 - `socialLinks`：社交链接（`href` 为 `null` 时不会显示，填上之后会出现在页脚右侧和 /links 页面的 Me 区块）
 - `filings`：页脚底部那行小字的备案信息（ICP 备案、公安备案），不需要就把数组改成 `[]`
@@ -132,22 +132,17 @@ showHeroImage: true,   // true = 左边文字 + 右边图片；false = 纯文字
 页脚在 `src/components/Footer.astro`，内容全部来自 `src/config/site.ts`，平时不用动组件：
 
 ```text
-Fivk                    EXPLORE       MY INTERNET          [RSS] [↑]
-记录生活，也记录折腾。    About         Blog ↗
-                        Projects      Gallery ↗
-                        Now           Files ↗
-                        Uses
-                        Links
-──────────────────────────────────────────────────────────────────
-© 2026 Fivk                        黔ICP备…        贵公网安备…
+[图标] Fivk      Blog · Gallery · Projects · Now · Uses · Links      [GitHub][RSS][Email] │ 黔ICP备…
+      记录生活…           © 2026 Fivk. All rights reserved.                              │ 贵公网安备…   [↑]
 ```
 
-- 左侧品牌：`site.name` + `site.tagline`
-- 中间两列：`nav`（站内导航）、`internetSites` 中 `external: true` 的条目（站外站点）
-- 右侧图标：`socialLinks` 里填了 `href` 的条目，RSS 默认跟着 `site.blogRss` 走
-- 最底部：`site.startYear` 起算的年份 + `filings` 备案信息，字号和颜色都比正文更轻
-- 返回顶部按钮用原生 JS 实现（`src/components/Footer.astro` 底部），页面短到不用滚动时会自动隐藏，没有引入任何依赖
-- 手机上会变成「品牌 → 两列导航 → 图标」的堆叠排版，同一份代码，不需要单独维护
+- 左侧：站点图标（直接复用 `public/favicon.svg`）+ `site.name` + `site.tagline`
+- 中间：一行导航（用 `·` 分隔）+ 下面的版权行；年份从 `site.startYear` 起算，后半句是 `site.copyrightNote`（不想要就改成 `''`）
+- 右侧：`socialLinks` 里填了 `href` 的图标 → 竖分隔线 → `filings` 两行备案 → 返回顶部按钮
+- 页脚导航 = `internetSites` 里的站外站点（`Files` 这种标了 `muted` 的基础设施入口不放进来）+ `nav` 里除 About 之外的条目；加减条目、换顺序改这两个数组就行，不用动组件
+- 备案行只要其中一条填了 `icon`，两条都会留出同样的图标位，文字左边缘才会对齐
+- 返回顶部按钮是原生 JS（组件底部十几行），页面短到不用滚动时会自动隐藏，没有引入任何依赖
+- 手机上自动改成上下堆叠：品牌 → 导航 → 版权 → 图标与返回顶部 → 两行备案，不会横向溢出
 
 ### 改备案信息
 
@@ -211,13 +206,3 @@ Gallery、Files 目前只做入口跳转，不复制子站内容。以后需要�
 - 字体只用系统字体（含中文系统字体），不加载在线字体，保证国内访问速度。
 - 动画只做轻微的淡入、hover 位移和图片缩放，并遵循 `prefers-reduced-motion`。
 - 不在站点里出现服务器地址、端口、账号、密码等任何敏感信息。
-
-## 环境变量
-
-默认不需要任何环境变量。可选项见 `.env.example`，需要时复制成 `.env`（已被 `.gitignore` 忽略）。
-
-请不要把任何密钥、Token、服务器地址提交到仓库。
-
-## License
-
-内容（文字、照片）版权归 Fivk 所有；代码部分可自用参考。

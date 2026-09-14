@@ -38,6 +38,8 @@ export const site = {
   locale: 'zh-CN',
   /** 页脚版权起始年份 */
   startYear: 2026,
+  /** 页脚版权行后半句，年份会自动用 startYear 起算；不想要就改成空字符串 '' */
+  copyrightNote: 'All rights reserved.',
   /** 分享卡片图：替换 public/images/og.jpg 即可（1200×630 最好） */
   ogImage: '/images/og.jpg',
   /**
