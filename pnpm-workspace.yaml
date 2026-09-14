@@ -1,0 +1,4 @@
+# pnpm 11 的配置文件。
+# 下面这些依赖需要执行安装脚本，允许它们，pnpm install 才不会被判定为失败。
+allowBuilds:
+  esbuild: true

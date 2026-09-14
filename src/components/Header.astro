@@ -1,0 +1,143 @@
+---
+import { ArrowUpRight, Menu, X } from '@lucide/astro';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+import { nav, site } from '@/config/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+
+/** 顶栏右侧的站外入口 */
+const externalLinks = [
+  { label: 'Blog', href: 'https://blog.fivk.cn' },
+  { label: 'Gallery', href: 'https://photo.fivk.cn' },
+];
+---
+
+<header class="sticky top-0 z-50 border-b border-line/80 bg-canvas/85 backdrop-blur-md">
+  <div class="wrap flex h-16 items-center justify-between gap-3">
+    <a
+      href="/"
+      class="font-serif text-lg tracking-tight text-ink transition-colors hover:text-accent"
+      aria-label={`${site.name} 首页`}
+    >
+      {site.name}
+    </a>
+
+    <nav class="hidden items-center gap-0.5 md:flex" aria-label="主导航">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'rounded-lg px-3 py-2 text-sm transition-colors',
+              isActive(item.href) ? 'bg-surface-muted text-ink' : 'text-ink-soft hover:bg-surface-muted hover:text-ink',
+            ]}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-1.5">
+      <div class="hidden items-center gap-0.5 sm:flex">
+        {
+          externalLinks.map((link) => (
+            <a
+              href={link.href}
+              rel="noopener"
+              class="inline-flex items-center gap-0.5 rounded-lg px-2.5 py-2 text-sm text-ink-soft transition-colors hover:bg-surface-muted hover:text-ink"
+            >
+              {link.label}
+              <ArrowUpRight size={13} class="text-ink-faint" aria-hidden="true" />
+            </a>
+          ))
+        }
+      </div>
+
+      <ThemeToggle />
+
+      <button
+        type="button"
+        data-menu-toggle
+        class="inline-flex size-9 items-center justify-center rounded-lg border border-line text-ink-soft transition-colors hover:border-ink/20 hover:text-ink md:hidden"
+        aria-label="打开菜单"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <Menu size={17} class="menu-icon-open" aria-hidden="true" />
+        <X size={17} class="menu-icon-close" aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-line bg-canvas md:hidden">
+    <nav class="wrap flex flex-col py-3" aria-label="移动端导航">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'rounded-lg px-3 py-2.5 text-[0.95rem] transition-colors',
+              isActive(item.href) ? 'bg-surface-muted text-ink' : 'text-ink-soft hover:bg-surface-muted hover:text-ink',
+            ]}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <div class="mt-2 flex gap-2 border-t border-line pt-3">
+        {
+          externalLinks.map((link) => (
+            <a
+              href={link.href}
+              rel="noopener"
+              class="inline-flex flex-1 items-center justify-center gap-1 rounded-lg border border-line px-3 py-2 text-sm text-ink-soft transition-colors hover:text-ink"
+            >
+              {link.label}
+              <ArrowUpRight size={13} aria-hidden="true" />
+            </a>
+          ))
+        }
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .menu-icon-close {
+    display: none;
+  }
+
+  [data-menu-toggle][aria-expanded='true'] .menu-icon-open {
+    display: none;
+  }
+
+  [data-menu-toggle][aria-expanded='true'] .menu-icon-close {
+    display: block;
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector('[data-menu-toggle]');
+  const menu = document.querySelector('#mobile-menu');
+
+  if (toggle && menu) {
+    const setOpen = (open: boolean) => {
+      menu.classList.toggle('hidden', !open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
+    };
+
+    toggle.addEventListener('click', () => setOpen(menu.classList.contains('hidden')));
+    menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    });
+
+    // 放大到桌面尺寸后把菜单收起来，避免状态残留
+    window.matchMedia('(min-width: 768px)').addEventListener('change', () => setOpen(false));
+  }
+</script>

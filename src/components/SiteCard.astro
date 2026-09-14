@@ -1,0 +1,42 @@
+---
+import { ArrowRight, ArrowUpRight } from '@lucide/astro';
+import type { SiteLink } from '@/config/site';
+import { siteIcons } from '@/lib/icons';
+
+interface Props {
+  item: SiteLink;
+}
+
+const { item } = Astro.props;
+const Icon = siteIcons[item.icon ?? 'globe'];
+const isExternal = item.external ?? false;
+const Arrow = isExternal ? ArrowUpRight : ArrowRight;
+---
+
+<a
+  href={item.href}
+  rel={isExternal ? 'noopener' : undefined}
+  class:list={[
+    'group flex h-full flex-col gap-4 rounded-xl border bg-surface p-5 transition duration-300',
+    'hover:-translate-y-0.5 hover:border-ink/15 hover:shadow-[0_12px_32px_-22px_rgb(0_0_0/0.45)]',
+    item.muted ? 'border-dashed border-line' : 'border-line',
+  ]}
+>
+  <div class="flex items-center justify-between">
+    <span
+      class:list={[
+        'inline-flex size-9 items-center justify-center rounded-lg',
+        item.muted ? 'bg-transparent text-ink-faint' : 'bg-surface-muted text-ink-soft group-hover:text-accent',
+        'transition-colors',
+      ]}
+    >
+      <Icon size={17} aria-hidden="true" />
+    </span>
+    <Arrow size={15} class="text-ink-faint transition-colors group-hover:text-ink" aria-hidden="true" />
+  </div>
+
+  <div>
+    <h3 class="font-medium text-ink transition-colors group-hover:text-accent">{item.title}</h3>
+    <p class="mt-1.5 text-sm leading-6 text-ink-soft">{item.description}</p>
+  </div>
+</a>

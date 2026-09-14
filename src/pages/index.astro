@@ -1,0 +1,76 @@
+---
+import { ArrowRight } from '@lucide/astro';
+import { getCollection } from 'astro:content';
+import Hero from '@/components/Hero.astro';
+import PostList from '@/components/PostList.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import Section from '@/components/Section.astro';
+import SiteCard from '@/components/SiteCard.astro';
+import { internetSites, site } from '@/config/site';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getLatestPosts } from '@/lib/posts';
+
+const featuredProjects = (await getCollection('projects'))
+  .filter((project) => project.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const posts = await getLatestPosts(3);
+---
+
+<BaseLayout>
+  <Hero />
+
+  <section class="wrap py-4 md:py-8" data-reveal>
+    <div class="rounded-2xl border border-line bg-surface p-6 sm:p-8">
+      <div class="max-w-2xl space-y-3">
+        {site.homeAbout.map((paragraph) => <p class="text-[0.975rem] leading-7 text-ink-soft">{paragraph}</p>)}
+      </div>
+      <a
+        href="/about"
+        class="group mt-6 inline-flex items-center gap-1 text-sm text-ink transition-colors hover:text-accent"
+      >
+        About me
+        <ArrowRight size={14} class="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+      </a>
+    </div>
+  </section>
+
+  <Section title="My Internet" description="我在互联网上的一些地方，写的东西和拍的照片都放在这里。">
+    <ul class="grid gap-4 sm:grid-cols-2">
+      {internetSites.map((item) => <li class="h-full"><SiteCard item={item} /></li>)}
+    </ul>
+  </Section>
+
+  <Section
+    title="Projects"
+    description="一些真正做过、正在做或者长期折腾的东西。"
+    href="/projects"
+    linkLabel="所有项目"
+  >
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        featuredProjects.map((project) => (
+          <li class="h-full">
+            <ProjectCard
+              href={`/projects/${project.id}`}
+              title={project.data.title}
+              description={project.data.description}
+              tags={project.data.tags}
+              status={project.data.status}
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section
+    title="Latest Posts"
+    description="来自博客的最近几篇文章，点进去就是博客原文。"
+    href={site.blogUrl}
+    linkLabel="去博客看看"
+    external
+  >
+    <PostList posts={posts} blogUrl={site.blogUrl} />
+  </Section>
+</BaseLayout>

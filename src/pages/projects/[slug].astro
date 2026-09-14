@@ -1,0 +1,77 @@
+---
+import { ArrowLeft, ArrowUpRight } from '@lucide/astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, description, tags, status, link, repo } = entry.data;
+
+const statusLabels: Record<typeof status, string> = {
+  active: '进行中',
+  wip: '施工中',
+  paused: '暂缓',
+};
+---
+
+<BaseLayout title={title} description={description} type="article">
+  <article class="wrap pt-10 md:pt-14">
+    <a
+      href="/projects"
+      class="inline-flex items-center gap-1 text-sm text-ink-soft transition-colors hover:text-accent"
+    >
+      <ArrowLeft size={14} aria-hidden="true" />
+      Projects
+    </a>
+
+    <h1 class="mt-6 font-serif text-3xl tracking-tight text-ink sm:text-4xl" data-reveal>{title}</h1>
+    <p class="mt-4 max-w-2xl text-base leading-7 text-ink-soft" data-reveal>{description}</p>
+
+    <div class="mt-6 flex flex-wrap items-center gap-2" data-reveal>
+      <span class="chip">{statusLabels[status]}</span>
+      {tags.map((tag) => <span class="chip">{tag}</span>)}
+    </div>
+
+    {
+      (link || repo) && (
+        <div class="mt-8 flex flex-wrap gap-3" data-reveal>
+          {link && (
+            <a href={link} rel="noopener" class="btn bg-ink text-canvas hover:bg-ink/90">
+              访问项目
+              <ArrowUpRight size={15} aria-hidden="true" />
+            </a>
+          )}
+          {repo && (
+            <a href={repo} rel="noopener" class="btn border border-line text-ink hover:border-ink/25 hover:bg-surface-muted">
+              源码
+              <ArrowUpRight size={15} aria-hidden="true" />
+            </a>
+          )}
+        </div>
+      )
+    }
+
+    <div class="prose mt-10 max-w-2xl" data-reveal>
+      <Content />
+    </div>
+  </article>
+
+  <div class="wrap mt-12 md:mt-16">
+    <div class="border-t border-line pt-6">
+      <a href="/projects" class="group inline-flex items-center gap-1 text-sm text-ink-soft transition-colors hover:text-accent">
+        <ArrowLeft size={14} class="transition-transform group-hover:-translate-x-0.5" aria-hidden="true" />
+        返回 Projects
+      </a>
+    </div>
+  </div>
+</BaseLayout>

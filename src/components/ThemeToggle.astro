@@ -1,0 +1,47 @@
+---
+import { Moon, Sun } from '@lucide/astro';
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  class="inline-flex size-9 items-center justify-center rounded-lg border border-line text-ink-soft transition-colors hover:border-ink/20 hover:text-ink"
+  aria-label="切换深浅色主题"
+  title="切换深浅色主题"
+>
+  <Moon size={16} class="dark:hidden" aria-hidden="true" />
+  <Sun size={16} class="hidden dark:block" aria-hidden="true" />
+</button>
+
+<script>
+  const button = document.querySelector('[data-theme-toggle]');
+  const root = document.documentElement;
+  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function applyTheme(isDark: boolean, persist: boolean) {
+    root.classList.toggle('dark', isDark);
+    if (!persist) return;
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    } catch (error) {
+      /* 隐私模式下写不了 localStorage，忽略即可 */
+    }
+  }
+
+  function storedTheme(): string | null {
+    try {
+      return localStorage.getItem('theme');
+    } catch (error) {
+      return null;
+    }
+  }
+
+  button?.addEventListener('click', () => {
+    applyTheme(!root.classList.contains('dark'), true);
+  });
+
+  // 用户没有手动选过主题时，跟随系统切换
+  systemTheme.addEventListener('change', (event) => {
+    if (!storedTheme()) applyTheme(event.matches, false);
+  });
+</script>

@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import PageHeader from '@/components/PageHeader.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const description = '一些真正做过、正在做或者长期折腾的东西。';
+---
+
+<BaseLayout title="Projects" description={description}>
+  <PageHeader title="Projects" lead={description} />
+
+  <div class="wrap pb-8">
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal>
+      {
+        projects.map((project) => (
+          <li class="h-full">
+            <ProjectCard
+              href={`/projects/${project.id}`}
+              title={project.data.title}
+              description={project.data.description}
+              tags={project.data.tags}
+              status={project.data.status}
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>

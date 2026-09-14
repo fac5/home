@@ -1,0 +1,8 @@
+# 统一使用 LF 换行，避免 Windows 与 Linux（Cloudflare 构建机）之间的差异
+* text=auto eol=lf
+
+# 二进制文件不做换行处理
+*.jpg binary
+*.png binary
+*.ico binary
+*.webp binary

@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from 'astro:content';
+import PageHeader from '@/components/PageHeader.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const entry = (await getCollection('now'))[0];
+const { Content } = await render(entry);
+const { title, updated, draft } = entry.data;
+
+const description = 'Fivk 现在正在做什么：最近在折腾的东西、在看的电影、在用的技术。';
+---
+
+<BaseLayout title={title} description={description}>
+  <PageHeader
+    title={title}
+    lead="这一页记录我「现在」在做什么——它会一直变，所以隔一阵子就会更新一次。"
+    meta={`最后更新 ${updated}`}
+  />
+
+  <div class="wrap pb-8">
+    {
+      draft && (
+        <p
+          class="mb-10 rounded-xl border border-dashed border-line bg-surface px-5 py-4 text-sm leading-6 text-ink-soft"
+          data-reveal
+        >
+          这一页还在整理中，内容会陆续补上。
+        </p>
+      )
+    }
+
+    <div class="prose prose-sections max-w-2xl" data-reveal>
+      <Content />
+    </div>
+  </div>
+</BaseLayout>
