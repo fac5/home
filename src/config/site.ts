@@ -137,3 +137,26 @@ export const socialLinks: SocialLink[] = [
   // TODO: 如果愿意公开邮箱，把它填在这里（例如 mailto:you@example.com）
   { label: 'Email', href: null, icon: 'mail' },
 ];
+/**
+ * 备案信息（显示在页脚最下面一行）。
+ * 不需要就把数组改成 []，页脚会自动隐藏这一行；
+ * 换备案号时只改 text 和 href，不要改结构。
+ */
+export type Filing = {
+  text: string;
+  href: string;
+  /** 可选图标（例如公安备案的小警徽），文件放在 public 目录下 */
+  icon?: string;
+};
+
+export const filings: Filing[] = [
+  {
+    text: '黔ICP备2022009864号-1',
+    href: 'https://beian.miit.gov.cn/',
+  },
+  {
+    text: '贵公网安备 52262702000070号',
+    href: 'https://beian.mps.gov.cn/#/query/webSearch?code=52262702000070',
+    icon: '/images/beian.png',
+  },
+];

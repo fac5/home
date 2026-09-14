@@ -62,6 +62,7 @@ Cloudflare 的界面偶尔会调整，如果找不到对应入口，按「Git �
 ├── public/
 │   ├── images/
 │   │   ├── hero-placeholder.svg   # 首页图片的占位图（有 hero.jpg 时不会用到）
+│   │   ├── beian.png              # 公安备案图标
 │   │   └── og.jpg                 # 分享卡片图（1200×630）
 │   ├── favicon.svg                # 站点图标
 │   └── robots.txt
@@ -113,6 +114,24 @@ Cloudflare 的界面偶尔会调整，如果找不到对应入口，按「Git �
 - `internetSites`：首页「My Internet」的卡片
 - `heroActions`：首页 Hero 的两个主入口
 - `socialLinks`：社交链接（`href` 为 `null` 时不会显示，填上就自动出现在页脚）
+- `filings`：页脚最下面一行的备案信息（ICP 备案、公安备案），不需要就把数组改成 `[]`
+
+### 改备案信息
+
+页脚最下面那行来自 `src/config/site.ts` 的 `filings`，换备案号只改 `text` 和 `href`：
+
+```ts
+export const filings: Filing[] = [
+  { text: '黔ICP备2022009864号-1', href: 'https://beian.miit.gov.cn/' },
+  {
+    text: '贵公网安备 52262702000070号',
+    href: 'https://beian.mps.gov.cn/#/query/webSearch?code=52262702000070',
+    icon: '/images/beian.png', // 小警徽图标，放在 public/images/ 下
+  },
+];
+```
+
+公安备案的图标放在 `public/images/beian.png`（现在仓库里的是从公安部备案系统取的官方图标）。把 `icon` 去掉就只显示文字，不会出现裂图。
 
 ### 加 / 改项目
 

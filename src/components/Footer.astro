@@ -1,5 +1,6 @@
 ---
-import { site, socialLinks } from '@/config/site';
+import { filings, site, socialLinks } from '@/config/site';
+import { assetIfExists } from '@/lib/assets';
 
 const currentYear = new Date().getFullYear();
 const yearLabel = currentYear > site.startYear ? `${site.startYear}–${currentYear}` : `${site.startYear}`;
@@ -9,7 +10,9 @@ const links = [
   { label: 'Blog', href: 'https://blog.fivk.cn', external: true },
   { label: 'Gallery', href: 'https://photo.fivk.cn', external: true },
   { label: 'Projects', href: '/projects', external: false },
-  ...socialLinks.filter((link) => link.href).map((link) => ({ label: link.label, href: link.href as string, external: true })),
+  ...socialLinks
+    .filter((link) => link.href)
+    .map((link) => ({ label: link.label, href: link.href as string, external: true })),
 ];
 ---
 
@@ -39,4 +42,38 @@ const links = [
       <p class="text-xs text-ink-faint">© {yearLabel} {site.name}</p>
     </div>
   </div>
+
+  {
+    filings.length > 0 && (
+      <div class="border-t border-line/70">
+        <ul class="wrap flex flex-wrap items-center gap-x-5 gap-y-2 py-5 text-xs text-ink-faint">
+          {filings.map((filing) => {
+            const icon = filing.icon ? assetIfExists(filing.icon) : undefined;
+            return (
+              <li>
+                <a
+                  href={filing.href}
+                  rel="noopener"
+                  class="inline-flex items-center gap-1.5 transition-colors hover:text-accent"
+                >
+                  {icon && (
+                    <img
+                      src={icon}
+                      alt=""
+                      width="62"
+                      height="67"
+                      class="h-4 w-auto"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                  {filing.text}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    )
+  }
 </footer>
