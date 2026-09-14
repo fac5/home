@@ -62,12 +62,13 @@ Cloudflare 的界面偶尔会调整，如果找不到对应入口，按「Git �
 ├── public/
 │   ├── images/
 │   │   ├── hero-placeholder.svg   # 首页图片的占位图（有 hero.jpg 时不会用到）
-│   │   ├── beian.png              # 公安备案图标
+│   │   ├── gonganbeian.png        # 公安备案图标
 │   │   └── og.jpg                 # 分享卡片图（1200×630）
 │   ├── favicon.svg                # 站点图标
 │   └── robots.txt
 ├── src/
 │   ├── components/                # Header / Footer / Hero / 各种 Card
+│   │   └── icons/                 # Lucide 里没有的图标（目前只有 GitHub）
 │   ├── config/
 │   │   └── site.ts                # ★ 站点配置：名字、简介、导航、外链、社交链接
 │   ├── content/
@@ -123,12 +124,34 @@ showHeroImage: true,   // true = 左边文字 + 右边图片；false = 纯文字
 - `nav`：顶部导航
 - `internetSites`：首页「My Internet」的卡片
 - `heroActions`：首页 Hero 的两个主入口
-- `socialLinks`：社交链接（`href` 为 `null` 时不会显示，填上之后会出现在 /links 页面的 Me 区块）
-- `filings`：页脚最下面一行的备案信息（ICP 备案、公安备案），不需要就把数组改成 `[]`
+- `socialLinks`：社交链接（`href` 为 `null` 时不会显示，填上之后会出现在页脚右侧和 /links 页面的 Me 区块）
+- `filings`：页脚底部那行小字的备案信息（ICP 备案、公安备案），不需要就把数组改成 `[]`
+
+### 页脚（Footer）
+
+页脚在 `src/components/Footer.astro`，内容全部来自 `src/config/site.ts`，平时不用动组件：
+
+```text
+Fivk                    EXPLORE       MY INTERNET          [RSS] [↑]
+记录生活，也记录折腾。    About         Blog ↗
+                        Projects      Gallery ↗
+                        Now           Files ↗
+                        Uses
+                        Links
+──────────────────────────────────────────────────────────────────
+© 2026 Fivk                        黔ICP备…        贵公网安备…
+```
+
+- 左侧品牌：`site.name` + `site.tagline`
+- 中间两列：`nav`（站内导航）、`internetSites` 中 `external: true` 的条目（站外站点）
+- 右侧图标：`socialLinks` 里填了 `href` 的条目，RSS 默认跟着 `site.blogRss` 走
+- 最底部：`site.startYear` 起算的年份 + `filings` 备案信息，字号和颜色都比正文更轻
+- 返回顶部按钮用原生 JS 实现（`src/components/Footer.astro` 底部），页面短到不用滚动时会自动隐藏，没有引入任何依赖
+- 手机上会变成「品牌 → 两列导航 → 图标」的堆叠排版，同一份代码，不需要单独维护
 
 ### 改备案信息
 
-页脚最下面那行来自 `src/config/site.ts` 的 `filings`，换备案号只改 `text` 和 `href`：
+页脚底部那行小字来自 `src/config/site.ts` 的 `filings`，换备案号只改 `text` 和 `href`：
 
 ```ts
 export const filings: Filing[] = [
@@ -141,7 +164,7 @@ export const filings: Filing[] = [
 ];
 ```
 
-公安备案的图标放在 `public/images/beian.png`（现在仓库里的是从公安部备案系统取的官方图标）。把 `icon` 去掉就只显示文字，不会出现裂图。
+公安备案的图标放在 `public/images/gonganbeian.png`（现在仓库里的是从公安部备案系统取的官方图标）。把 `icon` 去掉就只显示文字，不会出现裂图。
 
 ### 加 / 改项目
 

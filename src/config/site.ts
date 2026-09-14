@@ -129,7 +129,7 @@ export const internetSites: SiteLink[] = [
 
 /**
  * 社交链接。
- * href 为 null 的条目不会显示在页面上——填上地址之后，页脚和 Links 页会自动出现。
+ * href 为 null 的条目不会显示在页面上——填上地址之后，页脚右侧和 Links 页会自动出现。
  */
 export type SocialLink = {
   label: string;
@@ -142,9 +142,11 @@ export const socialLinks: SocialLink[] = [
   { label: 'GitHub', href: null, icon: 'github' },
   // TODO: 如果愿意公开邮箱，把它填在这里（例如 mailto:you@example.com）
   { label: 'Email', href: null, icon: 'mail' },
+  // 博客的 RSS，默认跟着上面的 blogRss 走；不需要就删掉这一行
+  { label: 'RSS', href: site.blogRss, icon: 'rss' },
 ];
 /**
- * 备案信息（显示在页脚最下面一行）。
+ * 备案信息（显示在页脚底部，字号最轻的那一行）。
  * 不需要就把数组改成 []，页脚会自动隐藏这一行；
  * 换备案号时只改 text 和 href，不要改结构。
  */
