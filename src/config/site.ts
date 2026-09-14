@@ -79,25 +79,15 @@ export const nav: NavItem[] = [
   { label: 'Links', href: '/links' },
 ];
 
-/** 首页 Hero 右侧的两个主入口 */
-export const heroActions: SiteLink[] = [
-  {
-    title: 'Blog',
-    description: '写点技术，也记录一些生活。',
-    href: 'https://blog.fivk.cn',
-    external: true,
-    icon: 'blog',
-  },
-  {
-    title: 'Gallery',
-    description: '用照片记录生活。',
-    href: 'https://photo.fivk.cn',
-    external: true,
-    icon: 'photo',
-  },
-];
+/**
+ * 站外链接的打开方式：
+ * 'blank' = 新标签页打开（默认），'same' = 当前页面打开。
+ * 只管博客、相册、文件站、友情链接、项目源码这类站外地址；
+ * 站内页面（/about、/projects 这些）始终在当前页打开。
+ */
+export const externalLinkTarget: 'blank' | 'same' = 'blank';
 
-/** 首页 My Internet：我在互联网上的几个站点 */
+/** 首页 My Internet：我在互联网上的几个站点。站外地址只在这里写一次 */
 export const internetSites: SiteLink[] = [
   {
     title: 'Blog',
@@ -130,6 +120,12 @@ export const internetSites: SiteLink[] = [
 ];
 
 /**
+ * 顶部导航右侧、首页 Hero 的主入口：取站外站点里没标 muted 的那两个（Blog、Gallery）。
+ * 想换入口或改地址，只动上面的 internetSites 就行。
+ */
+export const primarySites: SiteLink[] = internetSites.filter((item) => item.external && !item.muted);
+
+/**
  * 社交链接。
  * href 为 null 的条目不会显示在页面上——填上地址之后，页脚右侧和 Links 页会自动出现。
  */
@@ -155,7 +151,11 @@ export const socialLinks: SocialLink[] = [
 export type Filing = {
   text: string;
   href: string;
-  /** 可选图标（例如公安备案的小警徽），文件放在 public 目录下 */
+  /**
+   * 可选图标。两种写法：
+   * - 内置图标名：'shield' | 'badge' | 'file'（见 src/lib/icons.ts）
+   * - 图片路径：例如 '/images/gonganbeian.png'，文件放在 public 目录下
+   */
   icon?: string;
 };
 
@@ -163,6 +163,7 @@ export const filings: Filing[] = [
   {
     text: '黔ICP备2022009864号-1',
     href: 'https://beian.miit.gov.cn/',
+    icon: 'shield',
   },
   {
     text: '贵公网安备 52262702000070号',

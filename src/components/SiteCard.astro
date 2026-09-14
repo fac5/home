@@ -2,6 +2,7 @@
 import { ArrowRight, ArrowUpRight } from '@lucide/astro';
 import type { SiteLink } from '@/config/site';
 import { siteIcons } from '@/lib/icons';
+import { externalAttrs } from '@/lib/links';
 
 interface Props {
   item: SiteLink;
@@ -15,7 +16,7 @@ const Arrow = isExternal ? ArrowUpRight : ArrowRight;
 
 <a
   href={item.href}
-  rel={isExternal ? 'noopener' : undefined}
+  {...externalAttrs(isExternal)}
   class:list={[
     'group flex h-full flex-col gap-4 rounded-xl border bg-surface p-5 transition duration-300',
     'hover:-translate-y-0.5 hover:border-ink/15 hover:shadow-[0_12px_32px_-22px_rgb(0_0_0/0.45)]',

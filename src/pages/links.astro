@@ -5,6 +5,7 @@ import SiteCard from '@/components/SiteCard.astro';
 import { internetSites, socialLinks } from '@/config/site';
 import { friendLinks, friendLinksNote } from '@/data/links';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { externalAttrs } from '@/lib/links';
 
 const description = '我自己的几个站点，还有一些朋友的博客。';
 const socials = socialLinks.filter((link) => link.href);
@@ -27,7 +28,7 @@ const socials = socialLinks.filter((link) => link.href);
               <li>
                 <a
                   href={social.href as string}
-                  rel="noopener"
+                  {...externalAttrs(true)}
                   class="chip transition-colors hover:border-ink/25 hover:text-ink"
                 >
                   {social.label}
@@ -49,7 +50,7 @@ const socials = socialLinks.filter((link) => link.href);
               <li>
                 <a
                   href={friend.href}
-                  rel="noopener"
+                  {...externalAttrs(true)}
                   class="group flex items-start justify-between gap-3 rounded-xl border border-line bg-surface p-4 transition duration-300 hover:-translate-y-0.5 hover:border-ink/15"
                 >
                   <span>

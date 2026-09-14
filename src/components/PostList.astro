@@ -1,6 +1,7 @@
 ---
 import { ArrowUpRight } from '@lucide/astro';
 import { formatDate } from '@/lib/date';
+import { externalAttrs } from '@/lib/links';
 import type { Post } from '@/lib/posts';
 
 interface Props {
@@ -19,7 +20,7 @@ const { posts, blogUrl } = Astro.props;
         <li class="border-b border-line">
           <a
             href={post.href}
-            rel="noopener"
+            {...externalAttrs(true)}
             class="group flex flex-col gap-1.5 py-4 sm:flex-row sm:items-baseline sm:gap-6"
           >
             <time datetime={post.date.toISOString()} class="shrink-0 text-xs text-ink-faint tabular-nums sm:w-20">
@@ -45,7 +46,7 @@ const { posts, blogUrl } = Astro.props;
   ) : (
     <p class="rounded-xl border border-dashed border-line px-5 py-6 text-sm leading-6 text-ink-soft" data-reveal>
       暂时没读到博客文章。{' '}
-      <a href={blogUrl} rel="noopener" class="text-ink underline decoration-accent/50 underline-offset-4 hover:text-accent">
+      <a href={blogUrl} {...externalAttrs(true)} class="text-ink underline decoration-accent/50 underline-offset-4 hover:text-accent">
         直接去博客看看
       </a>
     </p>

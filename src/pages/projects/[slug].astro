@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowUpRight } from '@lucide/astro';
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { externalAttrs } from '@/lib/links';
 
 interface Props {
   entry: CollectionEntry<'projects'>;
@@ -46,13 +47,13 @@ const statusLabels: Record<typeof status, string> = {
       (link || repo) && (
         <div class="mt-8 flex flex-wrap gap-3" data-reveal>
           {link && (
-            <a href={link} rel="noopener" class="btn bg-ink text-canvas hover:bg-ink/90">
+            <a href={link} {...externalAttrs(true)} class="btn bg-ink text-canvas hover:bg-ink/90">
               访问项目
               <ArrowUpRight size={15} aria-hidden="true" />
             </a>
           )}
           {repo && (
-            <a href={repo} rel="noopener" class="btn border border-line text-ink hover:border-ink/25 hover:bg-surface-muted">
+            <a href={repo} {...externalAttrs(true)} class="btn border border-line text-ink hover:border-ink/25 hover:bg-surface-muted">
               源码
               <ArrowUpRight size={15} aria-hidden="true" />
             </a>

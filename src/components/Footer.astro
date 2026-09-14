@@ -2,7 +2,8 @@
 import { ChevronUp } from '@lucide/astro';
 import { filings, internetSites, nav, site, socialLinks, type SocialLink } from '@/config/site';
 import { assetIfExists } from '@/lib/assets';
-import { socialIcons } from '@/lib/icons';
+import { getFilingIcon, socialIcons } from '@/lib/icons';
+import { externalAttrs } from '@/lib/links';
 
 const currentYear = new Date().getFullYear();
 const yearLabel = currentYear > site.startYear ? `${site.startYear}–${currentYear}` : `${site.startYear}`;
@@ -25,8 +26,21 @@ const footerNav = [
 /** 还没填 href 的社交链接直接不渲染，不会留下一排空位 */
 const socials = socialLinks.filter((link): link is SocialLink & { href: string } => Boolean(link.href));
 
-/** 只要有一条备案带图标，就给每条备案留出同样的图标位，两行文字才能对齐 */
-const filingIcons = filings.map((filing) => (filing.icon ? assetIfExists(filing.icon) : undefined));
+/**
+ * 备案图标：'/' 开头的是 public 下的图片文件，其它当成内置图标名（见 lib/icons.ts）。
+ * 只要有一条带图标，就给每条都留出同样的图标位，两行文字才会对齐。
+ */
+const filingIcons = filings.map((filing) => {
+  if (!filing.icon) return undefined;
+
+  if (filing.icon.startsWith('/')) {
+    const src = assetIfExists(filing.icon);
+    return src ? { src } : undefined;
+  }
+
+  const Icon = getFilingIcon(filing.icon);
+  return Icon ? { Icon } : undefined;
+});
 const reserveFilingIcon = filingIcons.some(Boolean);
 
 const copyright = [`© ${yearLabel} ${site.name}.`, site.copyrightNote].filter(Boolean).join(' ');
@@ -59,7 +73,7 @@ const iconButton =
                     ·
                   </span>
                 )}
-                <a href={item.href} rel={item.external ? 'noopener' : undefined} class={navLink}>
+                <a href={item.href} {...externalAttrs(item.external)} class={navLink}>
                   {item.label}
                 </a>
               </li>
@@ -78,7 +92,7 @@ const iconButton =
             const Icon = socialIcons[link.icon];
             return (
               <li>
-                <a href={link.href} rel="noopener" aria-label={link.label} class={iconButton}>
+                <a href={link.href} {...externalAttrs(true)} aria-label={link.label} class={iconButton}>
                   <Icon size={18} aria-hidden="true" />
                 </a>
               </li>
@@ -104,16 +118,17 @@ const iconButton =
         {
           filings.map((filing, index) => {
             const icon = filingIcons[index];
+            const Icon = icon && 'Icon' in icon ? icon.Icon : undefined;
             return (
               <li>
                 <a
                   href={filing.href}
-                  rel="noopener"
+                  {...externalAttrs(true)}
                   class="inline-flex items-center gap-1.5 transition-colors hover:text-ink-soft"
                 >
-                  {icon && (
+                  {icon && 'src' in icon && (
                     <img
-                      src={icon}
+                      src={icon.src}
                       alt=""
                       width="62"
                       height="67"
@@ -122,6 +137,7 @@ const iconButton =
                       decoding="async"
                     />
                   )}
+                  {Icon && <Icon size={14} class="shrink-0" aria-hidden="true" />}
                   {!icon && reserveFilingIcon && <span aria-hidden="true" class="size-3.5 shrink-0"></span>}
                   {filing.text}
                 </a>

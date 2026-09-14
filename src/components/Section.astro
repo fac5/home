@@ -1,5 +1,6 @@
 ---
 import { ArrowRight, ArrowUpRight } from '@lucide/astro';
+import { externalAttrs } from '@/lib/links';
 
 interface Props {
   id?: string;
@@ -26,7 +27,7 @@ const Icon = external ? ArrowUpRight : ArrowRight;
       href && (
         <a
           href={href}
-          rel={external ? 'noopener' : undefined}
+          {...externalAttrs(external)}
           class="group inline-flex items-center gap-1 text-sm text-ink-soft transition-colors hover:text-accent"
         >
           {linkLabel}

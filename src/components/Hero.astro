@@ -1,8 +1,9 @@
 ---
 import { ArrowUpRight } from '@lucide/astro';
-import { heroActions, site } from '@/config/site';
+import { primarySites, site } from '@/config/site';
 import { assetIfExists } from '@/lib/assets';
 import { siteIcons } from '@/lib/icons';
+import { externalAttrs } from '@/lib/links';
 
 /** 关掉 Hero 图片时（site.showHeroImage = false），这一块会变成纯文字的单列排版 */
 const withImage = site.showHeroImage;
@@ -28,12 +29,12 @@ const showPlaceholderHint = import.meta.env.DEV && withImage && heroSrc !== site
 
       <div class="mt-8 flex flex-wrap items-center gap-3">
         {
-          heroActions.map((action, index) => {
-            const Icon = siteIcons[action.icon ?? 'globe'];
+          primarySites.map((item, index) => {
+            const Icon = siteIcons[item.icon ?? 'globe'];
             return (
               <a
-                href={action.href}
-                rel="noopener"
+                href={item.href}
+                {...externalAttrs(true)}
                 class:list={[
                   'btn',
                   index === 0
@@ -42,7 +43,7 @@ const showPlaceholderHint = import.meta.env.DEV && withImage && heroSrc !== site
                 ]}
               >
                 <Icon size={15} aria-hidden="true" />
-                {action.title}
+                {item.title}
                 <ArrowUpRight size={14} class="opacity-60" aria-hidden="true" />
               </a>
             );

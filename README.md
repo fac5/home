@@ -80,7 +80,7 @@ Cloudflare 的界面偶尔会调整，如果找不到对应入口，按「Git �
 │   │   └── links.ts               # 友链列表
 │   ├── layouts/
 │   │   └── BaseLayout.astro       # 全站布局、SEO meta、主题脚本
-│   ├── lib/                       # 工具：RSS、日期、图标、资源判断
+│   ├── lib/                       # 工具：RSS、日期、图标、资源判断、站外链接属性
 │   ├── pages/                     # 路由
 │   │   ├── index.astro            # 首页
 │   │   ├── about.astro
@@ -123,9 +123,23 @@ showHeroImage: true   // true = 左边文字 + 右边图片；false = 纯文字�
 - `site`：站名、标题、简介、域名、首页文案、RSS 地址
 - `nav`：顶部导航
 - `internetSites`：首页「My Internet」的卡片，页脚导航里的站外站点也取自这里
-- `heroActions`：首页 Hero 的两个主入口
+- `primarySites`：顶部导航右侧、首页 Hero 的两个主入口，自动取 `internetSites` 里没标 `muted` 的站外站点（Blog、Gallery），不用单独维护
+- `externalLinkTarget`：站外链接的打开方式，`'blank'` 新标签页（默认）/ `'same'` 当前页
 - `socialLinks`：社交链接（`href` 为 `null` 时不会显示，填上之后会出现在页脚右侧和 /links 页面的 Me 区块）
 - `filings`：页脚底部那行小字的备案信息（ICP 备案、公安备案），不需要就把数组改成 `[]`
+
+### 站外链接的打开方式
+
+博客、相册、文件站、友情链接、项目源码这些站外地址，默认在**新标签页**打开；想让它们都在当前页打开，改 `src/config/site.ts` 一行就行：
+
+```ts
+// 'blank' = 新标签页打开（默认）；'same' = 当前页面打开
+export const externalLinkTarget: 'blank' | 'same' = 'blank';
+```
+
+改完重新构建即可，全站生效，不需要动任何组件。站内页面（`/about`、`/projects` 这些）始终在当前页打开，不受这个开关影响。
+
+实现放在 `src/lib/links.ts` 的 `externalAttrs()`，组件里统一写成 `<a href={item.href} {...externalAttrs(item.external)}>`。**不要在组件里写死 `target="_blank"`**，否则这个开关会漏掉那条链接。
 
 ### 页脚（Footer）
 
@@ -150,7 +164,7 @@ showHeroImage: true   // true = 左边文字 + 右边图片；false = 纯文字�
 
 ```ts
 export const filings: Filing[] = [
-  { text: '黔ICP备2022009864号-1', href: 'https://beian.miit.gov.cn/' },
+  { text: '黔ICP备2022009864号-1', href: 'https://beian.miit.gov.cn/', icon: 'shield' },
   {
     text: '贵公网安备 52262702000070号',
     href: 'https://beian.mps.gov.cn/#/query/webSearch?code=52262702000070',
@@ -159,7 +173,12 @@ export const filings: Filing[] = [
 ];
 ```
 
-公安备案的图标放在 `public/images/gonganbeian.png`（现在仓库里的是从公安部备案系统取的官方图标）。把 `icon` 去掉就只显示文字，不会出现裂图。
+`icon` 是可选的，两种写法都行：
+
+- **内置图标名**：`'shield'`（盾牌勾，工信部备案在用）、`'badge'`、`'file'`，可选值见 `src/lib/icons.ts`。纯 SVG，不占额外请求。
+- **图片路径**：`'/images/xxx.png'`，文件放在 `public/images/` 下。公安备案用的是公安部备案系统的官方警徽图标 `public/images/gonganbeian.png`；如果你以后拿到官方的工信部备案图标，同样把 `icon` 换成图片路径就行。
+
+把 `icon` 整行去掉就只显示文字；只要有一行带图标，另一行会自动留出同样宽度的图标位，两行文字的左边缘才是对齐的。图标文件不存在时不会裂图（`src/lib/assets.ts` 会先判断文件是否存在）。
 
 ### 加 / 改项目
 

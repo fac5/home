@@ -1,16 +1,11 @@
 ---
 import { ArrowUpRight, Menu, X } from '@lucide/astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
-import { nav, site } from '@/config/site';
+import { nav, primarySites, site } from '@/config/site';
+import { externalAttrs } from '@/lib/links';
 
 const path = Astro.url.pathname;
 const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
-
-/** 顶栏右侧的站外入口 */
-const externalLinks = [
-  { label: 'Blog', href: 'https://blog.fivk.cn' },
-  { label: 'Gallery', href: 'https://photo.fivk.cn' },
-];
 ---
 
 <header class="sticky top-0 z-50 border-b border-line/80 bg-canvas/85 backdrop-blur-md">
@@ -43,13 +38,13 @@ const externalLinks = [
     <div class="flex items-center gap-1.5">
       <div class="hidden items-center gap-0.5 sm:flex">
         {
-          externalLinks.map((link) => (
+          primarySites.map((item) => (
             <a
-              href={link.href}
-              rel="noopener"
+              href={item.href}
+              {...externalAttrs(true)}
               class="inline-flex items-center gap-0.5 rounded-lg px-2.5 py-2 text-sm text-ink-soft transition-colors hover:bg-surface-muted hover:text-ink"
             >
-              {link.label}
+              {item.title}
               <ArrowUpRight size={13} class="text-ink-faint" aria-hidden="true" />
             </a>
           ))
@@ -90,13 +85,13 @@ const externalLinks = [
       }
       <div class="mt-2 flex gap-2 border-t border-line pt-3">
         {
-          externalLinks.map((link) => (
+          primarySites.map((item) => (
             <a
-              href={link.href}
-              rel="noopener"
+              href={item.href}
+              {...externalAttrs(true)}
               class="inline-flex flex-1 items-center justify-center gap-1 rounded-lg border border-line px-3 py-2 text-sm text-ink-soft transition-colors hover:text-ink"
             >
-              {link.label}
+              {item.title}
               <ArrowUpRight size={13} aria-hidden="true" />
             </a>
           ))
