@@ -16,15 +16,47 @@ const links = [
 ];
 ---
 
-<footer class="mt-16 border-t border-line md:mt-24">
-  <div class="wrap flex flex-col gap-6 py-10 sm:flex-row sm:items-start sm:justify-between">
+<footer class="mt-14 border-t border-line md:mt-16">
+  <div class="wrap flex flex-col gap-6 py-8 sm:flex-row sm:items-start sm:justify-between">
     <div>
       <p class="font-serif text-base text-ink">{site.name}</p>
-      <p class="mt-2 text-sm text-ink-soft">{site.tagline}</p>
+      <p class="mt-1.5 text-sm text-ink-soft">{site.tagline}</p>
+
+      {
+        filings.length > 0 && (
+          <ul class="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-ink-faint">
+            {filings.map((filing) => {
+              const icon = filing.icon ? assetIfExists(filing.icon) : undefined;
+              return (
+                <li>
+                  <a
+                    href={filing.href}
+                    rel="noopener"
+                    class="inline-flex items-center gap-1.5 transition-colors hover:text-accent"
+                  >
+                    {icon && (
+                      <img
+                        src={icon}
+                        alt=""
+                        width="62"
+                        height="67"
+                        class="h-3.5 w-auto shrink-0"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                    {filing.text}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )
+      }
     </div>
 
-    <div class="flex flex-col gap-3 sm:items-end">
-      <ul class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-soft">
+    <div class="flex flex-col gap-2.5 sm:items-end">
+      <ul class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-ink-soft">
         {
           links.map((link) => (
             <li>
@@ -42,38 +74,4 @@ const links = [
       <p class="text-xs text-ink-faint">© {yearLabel} {site.name}</p>
     </div>
   </div>
-
-  {
-    filings.length > 0 && (
-      <div class="border-t border-line/70">
-        <ul class="wrap flex flex-wrap items-center gap-x-5 gap-y-2 py-5 text-xs text-ink-faint">
-          {filings.map((filing) => {
-            const icon = filing.icon ? assetIfExists(filing.icon) : undefined;
-            return (
-              <li>
-                <a
-                  href={filing.href}
-                  rel="noopener"
-                  class="inline-flex items-center gap-1.5 transition-colors hover:text-accent"
-                >
-                  {icon && (
-                    <img
-                      src={icon}
-                      alt=""
-                      width="62"
-                      height="67"
-                      class="h-4 w-auto"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  )}
-                  {filing.text}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    )
-  }
 </footer>
